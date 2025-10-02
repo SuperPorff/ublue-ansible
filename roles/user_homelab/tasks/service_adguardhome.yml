@@ -1,0 +1,21 @@
+---
+- name: Create volumes for AdGuardHome
+  containers.podman.podman_volume:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "adguardhome-conf"
+    - "adguardhome-work"
+
+- name: Deploy AdGuardHome container
+  containers.podman.podman_container:
+    image: docker.io/adguard/adguardhome:v0.107.67
+    name: adguardhome
+    hostname: adguardhome
+    timezone: Asia/Kolkata
+    network: host
+    volumes:
+      - adguardhome-work:/opt/adguardhome/work
+      - adguardhome-conf:/opt/adguardhome/conf
+    state: started
+    restart_policy: always

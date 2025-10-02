@@ -1,0 +1,56 @@
+---
+- name: Install packages from brew
+  community.general.homebrew:
+    name:
+      - pre-commit
+      - direnv
+      - gh
+      - onefetch
+      - bat
+      - fish
+      - starship
+      - podman-compose
+      - ddrescue
+      - pandoc
+      - ccat
+      - eza
+      - borgbackup
+    state: present
+
+- name: Remove default home directories
+  file:
+    path: "{{ ansible_env.HOME }}/{{ item }}"
+    state: absent
+  loop:
+    - Desktop
+    - Documents
+    - Downloads
+    - Music
+    - Pictures
+    - Public
+    - Templates
+    - Videos
+
+- name: Create PARA directories
+  file:
+    path: "{{ ansible_env.HOME }}/{{ item }}"
+    state: directory
+  loop:
+    - "00 Inbox"
+    - "01 Projects"
+    - "02 Areas"
+    - "03 Resources"
+    - "04 Archives"
+
+- name: Create hidden directory for XDG
+  file:
+    path: "{{ ansible_env.HOME }}/.xdg"
+    state: directory
+
+- name: Set all XDG dirs to a hidden directory
+  copy:
+    src: "user-dirs.dirs"
+    dest: "{{ ansible_env.HOME }}/.config/user-dirs.dirs"
+    mode: "0644"
+
+

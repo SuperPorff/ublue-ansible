@@ -1,0 +1,5 @@
+# My workflow involves using tmux, and I would
+# rather not commit swap files used by vim in
+# other panes to be committed to the repo
+*.swp
+

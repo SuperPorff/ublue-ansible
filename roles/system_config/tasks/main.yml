@@ -1,0 +1,32 @@
+---
+- name: Enable SSH service
+  become: true
+  systemd_service:
+    name: sshd
+    state: started
+
+- name: Install packages from repos
+  become: true
+  community.general.rpm_ostree_pkg:
+    name:
+      - hyprland
+      - wofi
+      - swaybg
+      # - hyprlock
+      # - mako
+      - waydroid
+      - podman
+    state: present
+    apply_live: no
+
+- name: Enable ipv4 forwarding for podman containers
+  become: true
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+
+- name: Set minimum unprivileged port to 22
+  become: true
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_unprivileged_port_start
+    value: "22"

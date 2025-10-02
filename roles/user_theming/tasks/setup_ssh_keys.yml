@@ -1,0 +1,34 @@
+---
+# Note: This should run after the backup is restored!
+
+- name: Make sure SSH directory exists
+  file:
+    path: "{{ ansible_env.HOME }}/.ssh"
+    state: directory
+    mode: "0700"
+
+# NOTE: Right now this will work only for laptop. What about other devices?
+# I need a way to dynamically resolve a directed graph of total devices, and the
+# playbook should dynamically figure out which keypair for ssh between which devices
+# is missing and generate and install said keypair.
+# Its static rn.
+- name: Set some facts for the SSH keys
+  set_fact:
+    homelab_key: "{{ ansible_env.HOME }}/.ssh/id_ed25519_{{ homelab_hostname }}_{{ homelab_user }}"
+    phone_key: "{{ ansible_env.HOME }}/.ssh/id_ed25519_{{ phone_hostname }}_{{ phone_user }}"
+    tablet_key: "{{ ansible_env.HOME }}/.ssh/id_ed25519_{{ tablet_hostname }}_{{ tablet_user }}"
+
+- name: Generate SSH keypair for homelab
+  community.crypto.openssh_keypair:
+    path: "{{ ansible_env.HOME }}/.ssh/id_ed25519_{{ homelab_hostname }}_{{ homelab_user }}"
+    type: ed25519
+    comment: "Homelab keypair for laptop to homelab"
+    state: present
+    force: no
+    mode: "0600"
+
+- name: Install the SSH pubkey for homelab
+  authorized_key:
+    user: "{{ homelab_user }}"
+    state: present
+    key: "file:///home/{{ homelab_user }}/.ssh/id_ed25519.pub"

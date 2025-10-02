@@ -1,0 +1,15 @@
+[project]
+name = "ublue-ansible"
+version = "0.1.0"
+description = "My Homelab-as-Code (HaC) setup using ansible and podman"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ansible>=12.0.0",
+    "ansible-lint>=25.9.0",
+    "molecule[lint,podman]>=25.9.0",
+    "molecule-podman>=2.0.3",
+]
+
+[tool.uv.sources]
+molecule = { git = "https://github.com/ansible/molecule.git" }

@@ -1,0 +1,16 @@
+---
+- name: Enable lingering for homelab user
+  become: true
+  command:
+    argv:
+      - /usr/bin/loginctl
+      - enable-linger
+      - "{{ ansible_user_id }}"
+    creates: "/var/lib/systemd/linger/{{ ansible_user_id }}"
+
+- name: Create quadlet directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config/containers/systemd"
+    state: directory
+    mode: "0755"
+

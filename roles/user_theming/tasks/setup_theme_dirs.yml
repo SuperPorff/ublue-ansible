@@ -1,0 +1,21 @@
+---
+- name: Setup theming dirs
+  file:
+    path: "{{ ansible_env.HOME }}/.local/share/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "themes"
+    - "icons"
+    - "fonts"
+
+- name: Symlink theming dirs to home directory
+  file:
+    src: "{{ ansible_env.HOME }}/.local/share/{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.{{ item }}"
+    state: symlink
+    force: yes
+  loop:
+    - "themes"
+    - "icons"
+    - "fonts"

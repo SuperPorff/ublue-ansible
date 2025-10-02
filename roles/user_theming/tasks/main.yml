@@ -1,0 +1,21 @@
+---
+- name: Setup theming directories where the themes will be installed
+  include_tasks: setup_theme_dirs.yml
+
+- name: Install nerd fonts for code editing
+  include_tasks: install_nerd_fonts.yml
+
+- name: Install KDE Plasma themes if its being used
+  include_tasks: install_kde_plasma_themes.yml
+  when: "'GNOME' in (ansible_env.XDG_CURRENT_DESKTOP | default(''))
+        or 'gnome' in (ansible_env.XDG_CURRENT_DESKTOP | default(''))"
+
+- name: Install Gnome themes if its being used
+  include_tasks: install_gnome_themes.yml
+  when: "'KDE' in (ansible_env.XDG_CURRENT_DESKTOP | default(''))
+        or 'plasma' in (ansible_env.XDG_CURRENT_DESKTOP | default(''))"
+
+- name: Setup hyprland config and its related tooling dotfiles
+  include_tasks: setup_hyprland.yml
+  when: "'Hyprland' in (ansible_env.XDG_CURRENT_DESKTOP | default(''))
+        or 'hyprland' in (ansible_env.XDG_CURRENT_DESKTOP
