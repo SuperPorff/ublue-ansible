@@ -1,0 +1,25 @@
+---
+- name: Install neovim from brew
+  community.general.homebrew:
+    name: neovim
+    state: "{{ neovim_state | default('present') }}"
+
+- name: Create neovim config directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config/nvim"
+    state: "{{ neovim_state | default('directory') }}"
+    force: true
+
+- name: Deploy neovim config
+  file:
+    src: "files/nvim"
+    dest: "{{ ansible_env.HOME }}/.config/nvim"
+    mode: "0644"
+  when: neovim_state != "absent"    
+
+- name: Deploy neovim init.lua config from template
+  template:
+    src: "nvim/init.lua.j2"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/init.lua"
+    mode: "0644"
+  when: neovim_state != "absent"

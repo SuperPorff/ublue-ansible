@@ -1,0 +1,8 @@
+---
+- name: Install rfcv to view RFCs from the terminal
+  file:
+    src: rfcv
+    dest: "{{ ansible_env.HOME }}/.local/bin"
+    mode: "0644"
+    force: true
+  when: rfcv_state != "absent"

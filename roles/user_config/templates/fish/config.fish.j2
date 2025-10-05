@@ -1,0 +1,27 @@
+#!/usr/bin/env fish
+
+if status is-interactive
+
+    # Hook direnv to fish
+    direnv hook fish | source
+  
+    {%- if starship_status == "present" %}
+    # Hook starship to fish
+    starship hook fish | source
+    # Set starship config dir to ~/.config/starship
+    set -x STARSHIP_CONFIG "~/.config/starship/starship.toml"
+    {%- endif %}
+
+    # Use bat with TwoDark theme for manpager
+    set -x MANPAGER "sh -c 'col -bx | bat -l man -p --theme 'TwoDark''"
+    set -x MANROFFOPT "-c"
+
+    # :: Aliases for fish
+    alias --save c "clear"
+    alias --save q "exit"
+    alias --save pls "sudo"
+    alias --save fking "sudo"
+    alias --save ls "eza --icons --group-directories-first --git"
+    alias --save l "eza --icons --group-directories-first --git -1"
+
+end

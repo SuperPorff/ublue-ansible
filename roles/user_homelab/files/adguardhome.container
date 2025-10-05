@@ -1,0 +1,20 @@
+# ft: systemd
+
+[Unit]
+Description=
+Documentation=
+
+[Container]
+Image=
+ContainerName=
+Pod=
+EnvironmentFile=
+Volume=
+PublishPort=
+
+[Service]
+Restart=always
+TimeoutStopSec=900
+
+[Install]
+WantedBy=default.target

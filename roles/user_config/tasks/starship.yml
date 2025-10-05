@@ -1,0 +1,24 @@
+---
+- name: Install starship from brew
+  community.general.homebrew:
+    name: starship
+    state: "{{ starship_state | default('present') }}"
+
+- name: Create starship config directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config/"
+    state: "{{ starship_state | default('directory') }}"
+    force: true
+
+- name: Deploy starship config
+  file:
+    src: "files/starship"
+    dest: "{{ ansible_env.HOME }}/.config/starship"
+    mode: "0644"
+  when: starship_state != "absent"
+
+- name: Deploy starship theme from template
+  template:
+    src: "starship/starship.toml.j2"
+    dest: "{{ ansible_env.HOME }}/.config/starship/starship.toml"
+  when: starship_state != "absent"

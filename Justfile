@@ -15,6 +15,7 @@ setup:
     .venv/bin/uv add molecule
     .venv/bin/uv add ansible
     .venv/bin/uv add ansible-lint
+    .venv/bin/uv add github3.py
 
 # Create a new ansible role
 create-role role_name:
@@ -22,3 +23,9 @@ create-role role_name:
     mkdir -p "roles/{{ role_name }}/tasks"
     mkdir -p "roles/{{ role_name }}/templates"
     touch "roles/{{ role_name }}/tasks/main.yml"
+
+# Create config for a new tool
+create-config config_name:
+    touch "roles/user_config/tasks/{{ config_name }}.yml"
+    mkdir -p "roles/user_config/files/{{ config_name }}"
+    mkdir -p "roles/user_config/templates/{{ config_name }}"

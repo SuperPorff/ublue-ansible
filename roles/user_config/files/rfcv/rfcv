@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#python3 ~/bin/rfc_color.py $@ | less -rM		# DEBUG
+# python3 ~/.local/bin/rfc_color.py $@ | less -rM +Gg
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}" )" &>/dev/null && pwd)"
+
+python3 "$script_dir/rfc_color.py" $@ | bat -l man -p --theme 'TwoDark'

@@ -1,0 +1,44 @@
+---
+- name: Check if tmux is already installed
+  command: which tmux
+  register: tmux_check
+
+- name: Install tmux from brew
+  community.general.homebrew:
+    name: tmux
+    state: "{{ tmux_state | default('present') }}"
+  when: tmux_check.rc != 0
+
+- name: Create tmux config directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config/tmux"
+    state: "{{ tmux_state | default('directory') }}"
+    force: true
+
+- name: Deploy tmux config
+  file:
+    src: "tmux"
+    dest: "{{ ansible_env.HOME }}/.config/tmux"
+  when: tmux_state != "absent"
+
+- name: Theme tmux using template
+  template:
+    src: "tmux/tmux.conf.j2"
+  when: tmux_state != "absent"
+
+- name: Install tmux plugins
+  shell: |
+    tmux start-server \; \
+    new-session -d \; \
+    run-shell ~/.tmux/plugins/tpm/bin/install_plugins \; \
+    kill-server
+  args:
+    creates: "{{ ansible_env.HOME }}/.tmux/plugins/tmux-sensible"
+  when: tmux_state != "absent"
+
+- name: Symlink tmux to home
+  file:
+    src: "{{ ansible_env.HOME }}/.config/tmux/tmux.conf"
+    dest: "{{ ansible_env.HOME }}/.tmux.conf"
+    state: "{{ tmux_state | default('link') }}"
+    force: true

@@ -1,0 +1,39 @@
+---
+# Note: This should run after the backup is restored!
+
+- name: Make sure SSH directory exists
+  file:
+    path: "{{ ansible_env.HOME }}/.ssh"
+    state: directory
+    mode: "0700"
+
+- name: Set some facts for the SSH keys
+  set_fact:
+    ssh_keys:
+      - { name: homelab, user: sakura, ip_addr: "192.168.0.100", port: 22, path: "{{ ansible_env.HOME }}/.ssh/id_ed25519_{{ homelab_hostname }}_{{ homelab_user }}", type: ed25519 }
+      - { name: phone, user: u0_a199, ip_addr: "192.168.0.105", port: 8022, path: "{{ ansible_env.HOME }}/.ssh/id_ed25519_{{ phone_hostname }}_{{ phone_user }}", type: ed25519 }
+      - { name: tabby, user: u0_a256, ip_addr: "192.168.0.105", port: 8022, path: "{{ ansible_env.HOME }}/.ssh/id_ed25519_{{ tablet_hostname }}_{{ tablet_user }}", type: ed25519 }
+
+- name: Check existing keys
+  stat:
+    path: "{{ item.path }}"
+  loop: "{{ ssh_keys }}"
+  register: ssh_keypair
+
+- name: Generate missing SSH keys (if any)
+  community.crypto.openssh_keypair:
+    path: "{{ item.path }}"
+    type: "{{ item.type }}"
+    comment: "{{ item.name }}@{{ inventory.hostname }}"
+    state: present
+    force: no
+    mode: "0600"
+  loop: "{{ ssh_keys }}"
+  when: not (ssh_keypair.results[loop.index0].stat.exists | default(false))
+
+- name: Install the SSH pubkey to the devices
+  authorized_key:
+    user: "{{ item.user }}"
+    state: present
+    key: "{{ item.path }}"
+  loop: "{{ ssh_kets }}"

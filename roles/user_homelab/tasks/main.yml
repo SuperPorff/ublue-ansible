@@ -2,5 +2,5 @@
 - name: Prepare system for quadlets
   import_tasks: prepare_system.yml
 
-- name: Deploy AdGuardHome
-  import_tasks: service_adguardhome.yml
+- name: Install k3s
+  import_tasks: k3s.yml

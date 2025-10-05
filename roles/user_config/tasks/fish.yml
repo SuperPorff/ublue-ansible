@@ -1,0 +1,39 @@
+---
+- name: Install fish from brew
+  community.general.homebrew:
+    name: fish
+    state: "{{ fish_state | default('present') }}"
+
+- name: Create fish config directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config/fish"
+    state: "{{ fish_state | default('directory') }}"
+    force: true
+
+ - name: Deploy fish config
+  file:
+    src: "files/fish"
+    dest: "{{ ansible_env.HOME }}/.config/fish"
+    mode: "0644"
+  when: fish_state != "absent"
+
+- name: Deploy fish config.fish from template
+  template:
+    src: "fish/config.fish.j2"
+    dest: "{{ ansible_env.HOME }}/.config/fish/config.fish"
+    mode: "0644"
+    force: true
+  when: fish_state != "absent"
+
+- name: Install fisher plugin manager for fish
+  get_url:
+    url: "https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish"
+    dest: "{{ ansible_env.HOME }}/.config/fish/functions/fisher.fish"
+    mode: "0644"
+  when: fish_state != "absent"
+
+- name: Install plugins for fish using fish_plugins file
+  shell: fish -c "fisher update"
+  args:
+    creates: "{{ ansible_env.HOME }}/.config/fish/functions/fisher.fish"
+  when: fish_state != "absent"

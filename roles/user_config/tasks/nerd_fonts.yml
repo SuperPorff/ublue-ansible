@@ -1,0 +1,37 @@
+---
+- name: Get latest Nerd Fonts release manifest
+  uri:
+    url: "https://github.com/ryanoasis/nerd-fonts/releases/latest"
+    return_content: yes
+  register: nerd_fonts_release
+
+- name: Download these nerd fonts
+  set_fact:
+    nerd_fonts_list:
+      - CascadiaCode
+      - FiraCode
+      - Iosevka
+      - JetBrainsMono
+      - Meslo
+
+- name: Download nerd fonts
+  github_download:
+    repo: ryanoasis/nerd-fonts
+    match: "{{ item }}"
+  loop: "{{ nerd_fonts_list }}"
+
+- name: Extract nerd fonts to font directory
+  unarchive:
+    src: "/tmp/{{ item }}.tar.xz"
+    dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+    remote_src: yes
+  loop: "{{ nerd_fonts_list }}"
+
+- name: Rebuild font cache
+  command: fc-cache -f -v
+
+- name: Cleanup tmp
+  file:
+    name: "/tmp/{{ item }}.tar.xz"
+    state: absent
+  loop: "{{ nerd_fonts_list }}"
