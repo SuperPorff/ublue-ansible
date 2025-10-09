@@ -1,8 +1,0 @@
----
-- name: Setup podman homelab
-  hosts: homelab
-  become: false
-  tasks:
-    - name: Download latest bat
-      github_download:
-        repo: sharkdp/bat

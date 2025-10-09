@@ -16,6 +16,9 @@ setup:
     .venv/bin/uv add ansible
     .venv/bin/uv add ansible-lint
     .venv/bin/uv add github3.py
+    git clone https://github.com/borgbase/ansible-role-borgbackup \
+        roles/ansible-role-borgbackup
+    rm -rf roles/ansible-role-borgbackup/.git
 
 # Create a new ansible role
 create-role role_name:

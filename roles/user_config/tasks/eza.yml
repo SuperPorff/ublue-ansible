@@ -1,0 +1,19 @@
+---
+- name: Install eza from brew
+  community.general.homebrew:
+    name: eza
+    state: "{{ eza_state | default('present') }}"
+
+- name: Create eza config directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config/eza"
+    state: "{{ eza_state | default('directory') }}"
+    mode: "0644"
+  when: eza_state != "absent"
+
+- name: Deploy eza config
+  file:
+    src: "eza"
+    dest: "{{ ansible_env.HOME }}/.config/eza"
+    mode: "0644"
+  when: eza_state != "absent"

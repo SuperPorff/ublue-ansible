@@ -1,0 +1,24 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: archlinux-latest
+    image: archlinux:latest
+  - name: almalinux-9
+    image: almalinux:9
+  # - name: fedora-latest
+  #   image: fedora:latest
+  - name: debian-bookworm
+    image: debian:bookworm
+  - name: ubuntu-latest
+    image: ubuntu:latest
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .

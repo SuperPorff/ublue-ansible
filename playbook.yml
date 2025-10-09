@@ -5,5 +5,5 @@
   roles:
     - system_config
     - user_config
-    - user_homelab
- 
+    - role: user_homelab
+      when: target == "server" 
